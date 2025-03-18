@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -84,11 +85,46 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
+				},
+				'bounce-slight': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-5px)' }
+				},
+				'fade-in': {
+					'0%': { opacity: '0' },
+					'100%': { opacity: '1' }
+				},
+				'fade-out': {
+					'0%': { opacity: '1' },
+					'100%': { opacity: '0' }
+				},
+				'scale-up': {
+					'0%': { transform: 'scale(0.95)' },
+					'100%': { transform: 'scale(1)' }
+				},
+				'page-turn': {
+					'0%': { transform: 'rotateY(0deg)', transformOrigin: 'left' },
+					'100%': { transform: 'rotateY(-180deg)', transformOrigin: 'left' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 5s ease-in-out infinite',
+				'bounce-slight': 'bounce-slight 2s ease-in-out infinite',
+				'fade-in': 'fade-in 0.5s ease-out',
+				'fade-out': 'fade-out 0.5s ease-out',
+				'scale-up': 'scale-up 0.3s ease-out',
+				'page-turn': 'page-turn 0.5s ease-in-out'
+			},
+			fontFamily: {
+				sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui'],
+				heading: ['var(--font-heading)', 'var(--font-sans)'],
+				reading: ['var(--font-reading)', 'serif']
 			}
 		}
 	},
