@@ -129,3 +129,19 @@
   transform: translateY(-20px);
   transition: opacity 300ms, transform 300ms;
 }
+
+.prose {
+  @apply text-gray-700;
+}
+
+.prose p {
+  @apply mb-4 leading-relaxed;
+}
+
+.word:hover {
+  @apply bg-primary/10 transition-colors;
+}
+
+.highlight {
+  @apply bg-primary/20 rounded;
+}

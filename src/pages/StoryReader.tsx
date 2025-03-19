@@ -2920,14 +2920,14 @@ export default function StoryReader() {
       </audio>
 
       {(!isFullscreen || showControls) && (
-        <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-sm shadow-sm p-4 flex items-center justify-between border-b animate-fade-in rounded-sm">
+        <div className="md:absolute w-full relative md:top-16 px-4 flex items-center justify-between rounded-sm">
           <Button variant="ghost" size="icon" onClick={exitReader} className="w-9 h-9">
             <ArrowLeft size={20} />
           </Button>
 
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
-              {story.title} - {story.language}
+              {story.language}
             </span>
             <Button variant="ghost" size="icon" className="w-9 h-9" onClick={toggleFullscreen}>
               {isFullscreen ? <XCircle size={20} /> : <Maximize2 size={20} />}
