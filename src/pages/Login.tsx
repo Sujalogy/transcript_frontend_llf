@@ -2,12 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Book, LogIn } from "lucide-react";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export default function Login() {
   const navigate = useNavigate();
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://aa67-2401-4900-8811-2b29-e84f-9537-10e-e2dc.ngrok-free.app/auth/google/";
+    window.location.href = `${BASE_URL}/auth/google/`;
   };
 
   return (

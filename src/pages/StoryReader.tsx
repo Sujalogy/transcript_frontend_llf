@@ -2546,6 +2546,7 @@ import {
   Type,
   ArrowLeft,
   XCircle,
+  Maximize2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -2929,7 +2930,7 @@ export default function StoryReader() {
               {story.title} - {story.language}
             </span>
             <Button variant="ghost" size="icon" className="w-9 h-9" onClick={toggleFullscreen}>
-              {isFullscreen ? <XCircle size={20} /> : <Type size={20} />}
+              {isFullscreen ? <XCircle size={20} /> : <Maximize2 size={20} />}
             </Button>
           </div>
         </div>
@@ -2983,24 +2984,7 @@ export default function StoryReader() {
             {/* Mobile-optimized controls */}
             <div className="grid grid-cols-2 md:grid-cols-4 lg:flex items-center justify-between gap-2 md:gap-4">
               {/* Play controls */}
-              <div className="flex items-center justify-start col-span-2 md:col-span-1">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={resetAudio}
-                  className="h-8 w-8 md:h-9 md:w-9 rounded-full mr-2"
-                >
-                  <RotateCcw size={16} />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={togglePlayback}
-                  className="h-10 w-10 md:h-12 md:w-12 rounded-full"
-                >
-                  {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-                </Button>
-              </div>
+
 
               {/* Speed and volume controls */}
               <div className="flex items-center gap-1 md:gap-2">
@@ -3030,6 +3014,24 @@ export default function StoryReader() {
                 </div>
               </div>
 
+              <div className="flex items-center justify-start col-span-2 md:col-span-1">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={resetAudio}
+                  className="h-8 w-8 md:h-9 md:w-9 rounded-full mr-2"
+                >
+                  <RotateCcw size={16} />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={togglePlayback}
+                  className="h-10 w-10 md:h-12 md:w-12 rounded-full"
+                >
+                  {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+                </Button>
+              </div>
               {/* Action buttons */}
               <div className="flex items-center gap-1 md:gap-2 justify-end">
                 <Button
@@ -3055,10 +3057,11 @@ export default function StoryReader() {
       )}
 
       {(!isFullscreen || showControls) && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm shadow-md border-t p-4 animate-fade-in">
-          <div className="container flex flex-col gap-4">
+        <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm shadow-md border-t p-2 md:p-4 animate-fade-in">
+          <div className="container flex flex-col gap-2">
+            {/* Progress bar */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">{formatTime(currentTime)}</span>
+              <span className="text-xs md:text-sm text-muted-foreground">{formatTime(currentTime)}</span>
               <div
                 className="flex-1 bg-muted rounded-full h-2 cursor-pointer"
                 onClick={handleProgressBarClick}
@@ -3068,33 +3071,15 @@ export default function StoryReader() {
                   style={{ width: `${progress}%` }}
                 ></div>
               </div>
-              <span className="text-sm text-muted-foreground">{formatTime(duration)}</span>
+              <span className="text-xs md:text-sm text-muted-foreground">{formatTime(duration)}</span>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              {/* Centered Play/Pause and Reset Controls */}
-              <div className="flex items-center justify-center w-full">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={resetAudio}
-                  className="h-9 w-9 rounded-full mr-2"
-                >
-                  <RotateCcw size={18} />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={togglePlayback}
-                  className="h-12 w-12 rounded-full"
-                >
-                  {isPlaying ? <Pause size={24} /> : <Play size={24} />}
-                </Button>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Speed:</span>
-                <div className="w-24">
+            {/* Mobile-optimized controls */}
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:flex items-center justify-between gap-2 md:gap-4">
+              {/* Speed and volume controls */}
+              <div className="flex items-center gap-1 md:gap-2">
+                <span className="text-xs md:text-sm whitespace-nowrap">Speed:</span>
+                <div className="w-16 md:w-24">
                   <Slider
                     value={[playbackRate]}
                     min={0.7}
@@ -3103,12 +3088,13 @@ export default function StoryReader() {
                     onValueChange={handlePlaybackRateChange}
                   />
                 </div>
-                <span className="text-sm">{playbackRate.toFixed(1)}×</span>
+                <span className="text-xs md:text-sm">{playbackRate.toFixed(1)}×</span>
               </div>
 
-              <div className="flex items-center gap-2">
-                <Volume2 size={18} className="text-muted-foreground" />
-                <div className="w-24">
+              {/* Volume control */}
+              <div className="flex items-center gap-1 md:gap-2">
+                <Volume2 size={16} className="text-muted-foreground" />
+                <div className="w-16 md:w-24">
                   <Slider
                     value={[volume]}
                     max={100}
@@ -3118,9 +3104,31 @@ export default function StoryReader() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <Type size={14} className="text-muted-foreground" />
-                <div className="w-24">
+
+              {/* Play controls */}
+              <div className="flex items-center justify-center col-span-2 md:col-span-1">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={resetAudio}
+                  className="h-8 w-8 md:h-9 md:w-9 rounded-full mr-2"
+                >
+                  <RotateCcw size={16} />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={togglePlayback}
+                  className="h-10 w-10 md:h-12 md:w-12 rounded-full"
+                >
+                  {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+                </Button>
+              </div>
+
+              {/* Text size control */}
+              <div className="flex items-center gap-1 md:gap-2">
+                <Type size={16} className="text-muted-foreground" />
+                <div className="w-16 md:w-24">
                   <Slider
                     value={[fontSize]}
                     min={14}
@@ -3132,30 +3140,24 @@ export default function StoryReader() {
                 <Type size={20} className="text-muted-foreground" />
               </div>
 
-              <div className="flex items-center gap-2">
+
+              {/* Action buttons */}
+              <div className="flex items-center gap-1 md:gap-2 justify-end">
                 <Button
                   variant={liked ? "default" : "outline"}
                   size="icon"
                   onClick={toggleLike}
-                  className={`h-9 w-9 rounded-full ${liked ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90' : ''}`}
+                  className="h-8 w-8 md:h-9 md:w-9 rounded-full"
                 >
-                  <Heart size={18} className={liked ? 'fill-current' : ''} />
+                  <Heart size={16} className={liked ? 'fill-current' : ''} />
                 </Button>
                 <Button
                   variant={bookmarked ? "default" : "outline"}
                   size="icon"
                   onClick={toggleBookmark}
-                  className={`h-9 w-9 rounded-full ${bookmarked ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
+                  className="h-8 w-8 md:h-9 md:w-9 rounded-full"
                 >
-                  <BookmarkPlus size={18} />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={handleShare}
-                  className="h-9 w-9 rounded-full"
-                >
-                  <Share2 size={18} />
+                  <BookmarkPlus size={16} />
                 </Button>
               </div>
             </div>
