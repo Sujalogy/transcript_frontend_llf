@@ -1,43 +1,100 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import Navigation from "@/components/Navigation";
-import Index from "@/pages/Index";
+import { Provider } from 'react-redux';
 import Login from "@/pages/Login";
 import StoryLibrary from "@/pages/StoryLibrary";
 import StoryReader from "@/pages/StoryReader";
 import AdminDashboard from "@/pages/AdminDashboard";
 import StoryEditor from "@/pages/StoryEditor";
 import NotFound from "@/pages/NotFound";
+import StoryCreate from "./pages/StoryCreate";
+import { store } from "./redux/store";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { PublicRoute } from "./components/PublicRoute";
+import { AppDispatch } from "./redux/store";
+import { checkAuthStatus } from "./redux/authSlice";
 
 const queryClient = new QueryClient();
 
+// AuthCheck component to verify authentication on app load
+const AuthCheck = ({ children }: { children: React.ReactNode }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(checkAuthStatus());
+  }, [dispatch]);
+
+  return <>{children}</>;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <div className="min-h-screen flex flex-col">
-          <Navigation />
-          <main className="flex-1">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/library" element={<StoryLibrary />} />
-              <Route path="/story/:id" element={<StoryReader />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/story/new" element={<StoryEditor />} />
-              <Route path="/admin/story/:id" element={<StoryEditor />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-        </div>
-      </BrowserRouter>
-    </TooltipProvider>
+    <Provider store={store}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthCheck>
+            <div className="min-h-screen flex flex-col">
+              <Navigation />
+              <main className="flex-1">
+                <Routes>
+                  {/* Public Routes */}
+                  <Route path="/" element={<StoryLibrary />} />
+                  <Route path="/library" element={<StoryLibrary />} />
+                  <Route path="/story/:id" element={<StoryReader />} />
+
+                  {/* Public Route (with redirect if logged in) */}
+                  <Route
+                    path="/login"
+                    element={
+                      <PublicRoute restricted={true}>
+                        <Login />
+                      </PublicRoute>
+                    }
+                  />
+
+                  {/* Protected Admin Routes */}
+                  <Route
+                    path="/admin"
+                    element={
+                      <ProtectedRoute>
+                        <AdminDashboard />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/story/new"
+                    element={
+                      <ProtectedRoute>
+                        <StoryCreate />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/story/:id"
+                    element={
+                      <ProtectedRoute>
+                        <StoryEditor />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* 404 Route */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+            </div>
+          </AuthCheck>
+        </BrowserRouter>
+      </TooltipProvider>
+    </Provider>
   </QueryClientProvider>
 );
 

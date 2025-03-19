@@ -1,32 +1,24 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { getCurrentUser, logout } from "@/lib/data";
-import { User } from "@/types";
-import { Book, Home, Library, Settings, User as UserIcon, LogOut, Menu, X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { Book, Home, Library, Settings, User as UserIcon, LogOut, Menu, X, LucidePanelTopClose } from "lucide-react";
+import { logout } from "@/redux/authSlice";
 
 export default function Navigation() {
-  const [user, setUser] = useState<User | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
+  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
-    };
-    fetchUser();
-  }, []);
-
-  useEffect(() => {
-    // Close mobile menu when route changes
-    setIsMenuOpen(false);
+    setIsMenuOpen(false); // Close mobile menu when route changes
   }, [location.pathname]);
 
-  const handleLogout = async () => {
-    await logout();
-    setUser(null);
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   return (
@@ -34,7 +26,7 @@ export default function Navigation() {
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <Book className="h-8 w-8 text-primary" />
-          <span className="font-heading text-2xl font-bold storybook-heading">StoryWeaver</span>
+          <span className="font-heading text-2xl font-bold">StoryWeaver</span>
         </Link>
 
         {/* Mobile Menu Toggle */}
@@ -48,44 +40,24 @@ export default function Navigation() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link
-            to="/"
-            className="text-foreground/80 hover:text-foreground font-medium transition-colors flex items-center gap-1"
-          >
+          <Link to="/" className="text-foreground/80 hover:text-foreground font-medium transition-colors flex items-center gap-1">
             <Home size={18} />
             <span>Home</span>
           </Link>
-          <Link
-            to="/library"
-            className="text-foreground/80 hover:text-foreground font-medium transition-colors flex items-center gap-1"
-          >
-            <Library size={18} />
-            <span>Library</span>
-          </Link>
-          {user?.role === "admin" && (
-            <Link
-              to="/admin"
-              className="text-foreground/80 hover:text-foreground font-medium transition-colors flex items-center gap-1"
-            >
-              <Settings size={18} />
+          {isAuthenticated && (
+            <Link to="/admin" className="text-foreground/80 hover:text-foreground font-medium transition-colors flex items-center gap-1">
+              <LucidePanelTopClose size={18} />
               <span>Admin</span>
             </Link>
           )}
-          {user ? (
+
+          {isAuthenticated ? (
             <div className="flex items-center gap-4">
-              <Link
-                to="/profile"
-                className="flex items-center gap-1 text-foreground/80 hover:text-foreground font-medium transition-colors"
-              >
+              {/* <Link to="/profile" className="flex items-center gap-1 text-foreground/80 hover:text-foreground font-medium transition-colors">
                 <UserIcon size={18} />
-                <span>{user.name}</span>
-              </Link>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleLogout}
-                className="flex items-center gap-1"
-              >
+                <span>{user?.firstName} {user?.lastName}</span>
+              </Link> */}
+              <Button variant="outline" size="sm" onClick={handleLogout} className="flex items-center gap-1">
                 <LogOut size={16} />
                 <span>Logout</span>
               </Button>
@@ -104,43 +76,20 @@ export default function Navigation() {
       {isMenuOpen && (
         <div className="md:hidden animate-fade-in">
           <nav className="flex flex-col gap-4 p-6 bg-white border-t border-border">
-            <Link
-              to="/"
-              className="flex items-center gap-2 p-2 hover:bg-muted rounded-md transition-colors"
-            >
+            <Link to="/" className="flex items-center gap-2 p-2 hover:bg-muted rounded-md transition-colors">
               <Home size={18} />
               <span>Home</span>
             </Link>
-            <Link
-              to="/library"
-              className="flex items-center gap-2 p-2 hover:bg-muted rounded-md transition-colors"
-            >
-              <Library size={18} />
-              <span>Library</span>
-            </Link>
-            {user?.role === "admin" && (
-              <Link
-                to="/admin"
-                className="flex items-center gap-2 p-2 hover:bg-muted rounded-md transition-colors"
-              >
-                <Settings size={18} />
-                <span>Admin</span>
-              </Link>
-            )}
-            {user ? (
+
+
+
+            {isAuthenticated ? (
               <>
-                <Link
-                  to="/profile"
-                  className="flex items-center gap-2 p-2 hover:bg-muted rounded-md transition-colors"
-                >
+                <Link to="/profile" className="flex items-center gap-2 p-2 hover:bg-muted rounded-md transition-colors">
                   <UserIcon size={18} />
-                  <span>{user.name}</span>
+                  <span>{user?.firstName} {user?.lastName}</span>
                 </Link>
-                <Button
-                  variant="outline"
-                  onClick={handleLogout}
-                  className="flex items-center gap-2 mt-2"
-                >
+                <Button variant="outline" onClick={handleLogout} className="flex items-center gap-2 mt-2">
                   <LogOut size={18} />
                   <span>Logout</span>
                 </Button>

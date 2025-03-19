@@ -5,6 +5,25 @@
   text-align: center;
 }
 
+
+.highlight {
+  background-color: #FFEB3B;
+  border-radius: 3px;
+}
+
+.word {
+  display: inline-block;
+  margin: 0 1px;
+  cursor: pointer;
+  padding: 2px 3px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+.word:hover {
+  background-color: #E3F2FD;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

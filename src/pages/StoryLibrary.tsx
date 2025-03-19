@@ -1,62 +1,61 @@
-
 import { useState, useEffect } from "react";
-import { mockStories, filterStories } from "@/lib/data";
-import { Story, AgeGroup, Category, StoryFilters } from "@/types";
+// import { mockStories, filterStories } from "@/lib/data";
+import { Story } from "@/types";
 import StoryCard from "@/components/StoryCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Filter, X } from "lucide-react";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Search, X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { fetchStories } from "@/redux/storiesSlice";
+
+// Define the type for category
+type Category = string;
 
 export default function StoryLibrary() {
-  const [stories, setStories] = useState<Story[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const { stories, loading } = useSelector((state: RootState) => state.storiesSlice);
   const [filteredStories, setFilteredStories] = useState<Story[]>([]);
-  const [filters, setFilters] = useState<StoryFilters>({
+  const [filters, setFilters] = useState<{ sortBy: "popularity" | "date" | "title"; category?: string }>({
     sortBy: "popularity",
   });
   const [searchTerm, setSearchTerm] = useState("");
-  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
-
-  const ageGroups: AgeGroup[] = ["3-5", "6-8", "9-12", "13+"];
-  const categories: Category[] = [
-    "Adventure",
-    "Fantasy",
-    "Science",
-    "History",
-    "Nature",
-    "Friendship",
-    "Family",
-    "Animals",
-  ];
 
   useEffect(() => {
-    // In a real app, this would fetch from an API
-    const publishedStories = mockStories.filter(
-      (story) => story.status === "published"
-    );
-    setStories(publishedStories);
-    setFilteredStories(publishedStories);
-  }, []);
+    console.log('coing here')
+    if (stories.length <= 0) {
+      dispatch(fetchStories());
+    }
+  }, []); // Fetches only once when the component mounts
 
   useEffect(() => {
-    // Apply filters whenever they change
-    const filtered = filterStories(stories, {
-      ...filters,
-      searchTerm,
-      status: "published",
-    });
-    setFilteredStories(filtered);
-  }, [filters, searchTerm, stories]);
+    // Apply filtering and sorting logic
+    let updatedStories = [...stories];
+
+    if (filters.category) {
+      updatedStories = updatedStories.filter((story) => story.category === filters.category);
+    }
+
+    if (searchTerm) {
+      updatedStories = updatedStories.filter((story) =>
+        story.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (filters.sortBy === "title") {
+      updatedStories.sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    setFilteredStories(updatedStories);
+  }, [filters, searchTerm, stories]); // Runs when any dependency changes
+
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // Search is already handled by the useEffect above
-  };
-
-  const handleAgeGroupFilter = (ageGroup: AgeGroup | undefined) => {
-    setFilters((prev) => ({ ...prev, ageGroup }));
   };
 
   const handleCategoryFilter = (category: Category | undefined) => {
@@ -86,29 +85,6 @@ export default function StoryLibrary() {
         <div className="hidden lg:block w-64 shrink-0">
           <div className="bg-white rounded-xl shadow-md p-5 sticky top-20">
             <div className="mb-5">
-              <h3 className="font-medium mb-3">Age Group</h3>
-              <div className="flex flex-wrap gap-2">
-                <Badge
-                  variant={!filters.ageGroup ? "default" : "outline"}
-                  className="cursor-pointer"
-                  onClick={() => handleAgeGroupFilter(undefined)}
-                >
-                  All Ages
-                </Badge>
-                {ageGroups.map((age) => (
-                  <Badge
-                    key={age}
-                    variant={filters.ageGroup === age ? "default" : "outline"}
-                    className="cursor-pointer"
-                    onClick={() => handleAgeGroupFilter(age)}
-                  >
-                    {age}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-
-            <div className="mb-5">
               <h3 className="font-medium mb-3">Category</h3>
               <div className="flex flex-wrap gap-2">
                 <Badge
@@ -118,7 +94,7 @@ export default function StoryLibrary() {
                 >
                   All Categories
                 </Badge>
-                {categories.map((category) => (
+                {/* {categories.map((category) => (
                   <Badge
                     key={category}
                     variant={
@@ -129,7 +105,7 @@ export default function StoryLibrary() {
                   >
                     {category}
                   </Badge>
-                ))}
+                ))} */}
               </div>
             </div>
 
@@ -137,7 +113,7 @@ export default function StoryLibrary() {
               variant="outline"
               className="w-full"
               onClick={resetFilters}
-              disabled={!filters.ageGroup && !filters.category && !searchTerm}
+              disabled={!filters.category && !searchTerm}
             >
               <X size={16} className="mr-2" /> Reset Filters
             </Button>
@@ -152,7 +128,7 @@ export default function StoryLibrary() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   type="search"
-                  placeholder="Search stories by title, author, or tags..."
+                  placeholder="Search stories by title..."
                   className="pl-10"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -160,42 +136,19 @@ export default function StoryLibrary() {
               </div>
             </form>
             <div className="flex gap-3">
-              <Button
+              {/* <Button
                 variant="outline"
                 className="lg:hidden"
                 onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
               >
                 <Filter size={16} className="mr-2" /> Filters
-              </Button>
+              </Button> */}
             </div>
           </div>
 
           {/* Mobile Filter Menu */}
-          {isFilterMenuOpen && (
+          {/* {isFilterMenuOpen && (
             <div className="lg:hidden bg-white rounded-xl shadow-md p-5 mb-6 animate-fade-in">
-              <div className="mb-5">
-                <h3 className="font-medium mb-3">Age Group</h3>
-                <div className="flex flex-wrap gap-2">
-                  <Badge
-                    variant={!filters.ageGroup ? "default" : "outline"}
-                    className="cursor-pointer"
-                    onClick={() => handleAgeGroupFilter(undefined)}
-                  >
-                    All Ages
-                  </Badge>
-                  {ageGroups.map((age) => (
-                    <Badge
-                      key={age}
-                      variant={filters.ageGroup === age ? "default" : "outline"}
-                      className="cursor-pointer"
-                      onClick={() => handleAgeGroupFilter(age)}
-                    >
-                      {age}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
               <div className="mb-5">
                 <h3 className="font-medium mb-3">Category</h3>
                 <div className="flex flex-wrap gap-2">
@@ -229,10 +182,10 @@ export default function StoryLibrary() {
                 <X size={16} className="mr-2" /> Reset Filters
               </Button>
             </div>
-          )}
+          )} */}
 
           {/* Sorting Tabs */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <Tabs
               defaultValue="popularity"
               value={filters.sortBy}
@@ -247,23 +200,12 @@ export default function StoryLibrary() {
                 <TabsTrigger value="title">A-Z</TabsTrigger>
               </TabsList>
             </Tabs>
-          </div>
+          </div> */}
 
           {/* Active Filters */}
-          {(filters.ageGroup || filters.category || searchTerm) && (
+          {(filters.category || searchTerm) && (
             <div className="flex flex-wrap gap-2 mb-4">
               <Label className="my-auto text-sm">Active Filters:</Label>
-              {filters.ageGroup && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  Age: {filters.ageGroup}
-                  <button
-                    onClick={() => handleAgeGroupFilter(undefined)}
-                    className="ml-1 hover:text-destructive"
-                  >
-                    <X size={14} />
-                  </button>
-                </Badge>
-              )}
               {filters.category && (
                 <Badge variant="secondary" className="flex items-center gap-1">
                   Category: {filters.category}
