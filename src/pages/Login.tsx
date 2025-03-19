@@ -15,6 +15,8 @@ export default function Login() {
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4 bg-gradient-to-b from-primary/5 to-secondary/5">
       <div className="w-full max-w-md animate-entrance">
         <div className="text-center mb-8">
+
+
           <div className="inline-block p-4 rounded-full bg-primary/10 mb-4">
             <Book className="h-12 w-12 text-primary" />
           </div>
@@ -23,7 +25,14 @@ export default function Login() {
         </div>
 
         <Card className="border-none shadow-xl">
-          <CardHeader>
+          <CardHeader className="text-center">
+            {/* Parent Company Logo - Above Card */}
+            <img
+              src="https://staging.languageandlearningfoundation.org/wp-content/uploads/2024/12/llf-log0.jpg"
+              alt="LLF Logo"
+              className="mx-auto mb-4 h-12 object-contain"
+            />
+
             <CardTitle>Sign In</CardTitle>
             <CardDescription>Use your Google account to continue</CardDescription>
           </CardHeader>
@@ -33,6 +42,7 @@ export default function Login() {
             </Button>
           </CardContent>
         </Card>
+
       </div>
     </div>
   );

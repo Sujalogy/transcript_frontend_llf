@@ -40,6 +40,9 @@ export const storiesSlice = createSlice({
         addStory: (state, action: PayloadAction<Story>) => {
             state.stories = [action.payload, ...state.stories];
         },
+        updateStories: (state, action: PayloadAction<Story[]>) => {
+            state.stories = action.payload;
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -58,6 +61,6 @@ export const storiesSlice = createSlice({
     },
 });
 
-export const { addStory } = storiesSlice.actions;
+export const { addStory, updateStories } = storiesSlice.actions;
 
 export default storiesSlice.reducer;

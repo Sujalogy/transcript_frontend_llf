@@ -757,24 +757,41 @@ export default function StoryEditor() {
   //   }
   // };
 
+  // const handlePreview = () => {
+  //   setIsPreviewing(true);
+  //   setTimeout(() => {
+  //     setIsPreviewing(false);
+  //     toast({
+  //       title: "Preview Mode",
+  //       description: "This would open a preview of your story in a new tab.",
+  //     });
+  //   }, 1000);
+  // };
+
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <Loader2 className="h-8 w-8 animate-spin text-primary" />
+  //     </div>
+  //   );
+  // }
+
+
+
   const handlePreview = () => {
     setIsPreviewing(true);
     setTimeout(() => {
       setIsPreviewing(false);
+
+      // Navigate to story page with dynamic ID
+      navigate(`/story/${id}`);
+
       toast({
         title: "Preview Mode",
-        description: "This would open a preview of your story in a new tab.",
+        description: "Opening your story preview in a new tab...",
       });
     }, 1000);
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
 
   return (
     <div className="page-container pb-16 animate-entrance">
@@ -889,6 +906,7 @@ export default function StoryEditor() {
 
             <div className="space-y-3">
               <Button
+                disabled={true}
                 className="w-full storybook-button"
               // onClick={handleSave}
               // disabled={saving}
@@ -932,7 +950,8 @@ export default function StoryEditor() {
 
             {isEditing && (
               <div className="mt-6 pt-6 border-t">
-                <Button variant="destructive" className="w-full">
+                <Button variant="destructive" className="w-full" disabled={true}
+                >
                   <Trash className="mr-2 h-4 w-4" />
                   Delete Story
                 </Button>

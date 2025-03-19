@@ -21,7 +21,9 @@ import {
   Loader2
 } from "lucide-react";
 import { Story } from "@/types";
-import { fetchStories } from "@/redux/storiesSlice";
+import { fetchStories, updateStories } from "@/redux/storiesSlice";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 
 export default function AdminDashboard() {
   const { stories, loading } = useSelector((state: RootState) => state.storiesSlice);
@@ -111,17 +113,40 @@ export default function AdminDashboard() {
     });
     setSelectedStories([]);
   };
+  const handleDeleteStory = async (id: string) => {
+    try {
+      const response = await fetch(`${BASE_URL}/story/${id}`, {
+        method: "DELETE",
+        credentials: 'include',
+        mode: 'cors',
 
-  const handleDeleteStory = (id: string) => {
-    // In a real app, this would call an API
-    const remainingStories = stories.filter(story => story.id !== id);
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+          'Content-Type': 'application/json',
+        },
+      });
 
-    // Update Redux store or state
-    toast({
-      title: "Story Deleted",
-      description: "The story has been deleted."
-    });
+      if (!response.ok) {
+        throw new Error("Failed to delete the story.");
+      }
+
+      // Remove the deleted story from state
+      const remainingStories = stories.filter((story) => story.id !== id);
+      dispatch(updateStories(remainingStories)); // Ensure you have a state setter
+
+      toast({
+        title: "Story Deleted",
+        description: "The story has been successfully deleted.",
+      });
+    } catch (error) {
+      console.error("Error deleting story:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete the story. Please try again.",
+      });
+    }
   };
+
 
   if (loading) {
     return (
