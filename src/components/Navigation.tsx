@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { Book, Home, LogOut, Menu, X, User as UserIcon, LucidePanelTopClose } from "lucide-react";
 import { logout } from "@/redux/authSlice";
+import logo from '../../public/logo (2).png';
+
 
 export default function Navigation() {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,13 +29,12 @@ export default function Navigation() {
         {/* Left Section: Logo and Branding */}
         <Link to="/" className="flex items-center gap-2">
 
-          <Book className="h-8 w-8 text-primary" />
-          <span className="font-heading text-2xl font-bold">StoryWeaver</span>
           <img
-            src="https://staging.languageandlearningfoundation.org/wp-content/uploads/2024/12/llf-log0.jpg"
-            alt="LLF Logo"
+            src={logo}
+            alt="Sutra Pathan Logo"
             className="h-10 w-auto"
           />
+
         </Link>
 
         {/* Mobile Menu Toggle */}

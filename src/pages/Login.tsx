@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Book, LogIn } from "lucide-react";
+import logo from '../../public/logo (2).png';
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export default function Login() {
@@ -20,18 +21,22 @@ export default function Login() {
           <div className="inline-block p-4 rounded-full bg-primary/10 mb-4">
             <Book className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold storybook-heading">Welcome to StoryWeaver</h1>
+          <div className="flex items-center justify-center">
+
+            <h1 className="text-3xl font-bold storybook-heading">Welcome to </h1>
+            <img
+              src={logo}
+              alt="Sutra Pathan Logo"
+              className="h-7 w-auto ml-2 mb-1"
+            />
+          </div>
+
           <p className="text-muted-foreground mt-2">Sign in to access your magical reading journey</p>
         </div>
 
         <Card className="border-none shadow-xl">
           <CardHeader className="text-center">
             {/* Parent Company Logo - Above Card */}
-            <img
-              src="https://staging.languageandlearningfoundation.org/wp-content/uploads/2024/12/llf-log0.jpg"
-              alt="LLF Logo"
-              className="mx-auto mb-4 h-12 object-contain"
-            />
 
             <CardTitle>Sign In</CardTitle>
             <CardDescription>Use your Google account to continue</CardDescription>

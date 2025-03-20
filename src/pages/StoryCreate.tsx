@@ -136,7 +136,6 @@ export default function StoryCreate() {
                 {
                     method: "POST",
                     credentials: 'include',
-                    mode: 'cors',
                     headers: {
                         "ngrok-skip-browser-warning": "true",
                         'Content-Type': 'application/json',

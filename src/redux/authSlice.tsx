@@ -15,7 +15,6 @@ export const checkAuthStatus = createAsyncThunk<
         const response = await fetch(`${BASE_URL}/auth/me`, {
             method: 'GET',
             credentials: 'include',
-            mode: 'cors',
             headers: {
                 "ngrok-skip-browser-warning": "true",
                 'Content-Type': 'application/json',
@@ -42,7 +41,6 @@ export const logout = createAsyncThunk<
         const response = await fetch(`${BASE_URL}/auth/logout`, {
             method: 'GET',
             credentials: 'include',
-            mode: 'cors',
             headers: {
                 "ngrok-skip-browser-warning": "true",
                 'Content-Type': 'application/json',

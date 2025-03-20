@@ -11,7 +11,6 @@ export const fetchStories = createAsyncThunk<Story[]>(
         const response = await fetch(`${BASE_URL}/story`, {
             method: 'GET',
             credentials: 'include',
-            mode: 'cors',
 
             headers: {
                 "ngrok-skip-browser-warning": "true",

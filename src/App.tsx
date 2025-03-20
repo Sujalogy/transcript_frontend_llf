@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Navigation from "@/components/Navigation";
@@ -33,6 +33,21 @@ const AuthCheck = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Layout component that conditionally renders Navigation
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
+  const isLoginPage = location.pathname === "/login";
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      {!isLoginPage && <Navigation />}
+      <main className={`flex-1 ${isLoginPage ? "w-full" : ""}`}>
+        {children}
+      </main>
+    </div>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>
@@ -41,56 +56,53 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthCheck>
-            <div className="min-h-screen flex flex-col">
-              <Navigation />
-              <main className="flex-1">
-                <Routes>
-                  {/* Public Routes */}
-                  <Route path="/" element={<StoryLibrary />} />
-                  <Route path="/library" element={<StoryLibrary />} />
-                  <Route path="/story/:id" element={<StoryReader />} />
+            <Layout>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<StoryLibrary />} />
+                <Route path="/library" element={<StoryLibrary />} />
+                <Route path="/story/:id" element={<StoryReader />} />
 
-                  {/* Public Route (with redirect if logged in) */}
-                  <Route
-                    path="/login"
-                    element={
-                      <PublicRoute restricted={true}>
-                        <Login />
-                      </PublicRoute>
-                    }
-                  />
+                {/* Public Route (with redirect if logged in) */}
+                <Route
+                  path="/login"
+                  element={
+                    <PublicRoute restricted={true}>
+                      <Login />
+                    </PublicRoute>
+                  }
+                />
 
-                  {/* Protected Admin Routes */}
-                  <Route
-                    path="/admin"
-                    element={
-                      <ProtectedRoute>
-                        <AdminDashboard />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/story/new"
-                    element={
-                      <ProtectedRoute>
-                        <StoryCreate />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/story/:id"
-                    element={
-                      <ProtectedRoute>
-                        <StoryEditor />
-                      </ProtectedRoute>
-                    }
-                  />
+                {/* Protected Admin Routes */}
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/story/new"
+                  element={
+                    <ProtectedRoute>
+                      <StoryCreate />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/story/:id"
+                  element={
+                    <ProtectedRoute>
+                      <StoryEditor />
+                    </ProtectedRoute>
+                  }
+                />
 
-                  {/* 404 Route */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </main>
-            </div>
+                {/* 404 Route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Layout>
           </AuthCheck>
         </BrowserRouter>
       </TooltipProvider>

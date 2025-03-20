@@ -118,7 +118,6 @@ export default function AdminDashboard() {
       const response = await fetch(`${BASE_URL}/story/${id}`, {
         method: "DELETE",
         credentials: 'include',
-        mode: 'cors',
 
         headers: {
           "ngrok-skip-browser-warning": "true",
