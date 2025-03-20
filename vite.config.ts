@@ -8,6 +8,12 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    hmr: {
+      host: "sutra-pathan.llf.org.in",
+      clientPort: 443, // If you're using HTTPS
+      // or
+      // clientPort: 80, // If you're using HTTP
+    }
   },
   plugins: [
     react(),
